@@ -1,5 +1,11 @@
 # summer_eletrohits_2000
 
+##Integrantes
+
+-Enzo de Paula Souza
+-Erica Goncalves de Oliveira
+-
+
 Projeto Java — README inicial com instruções de execução e lista de tarefas previstas para persistência e regras de negócio.
 
 ## Requisitos
