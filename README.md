@@ -1,6 +1,6 @@
 # summer_eletrohits_2000
 
-##Integrantes
+## Integrantes
 
 -Enzo de Paula Souza
 -Erica Goncalves de Oliveira
