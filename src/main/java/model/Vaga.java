@@ -79,18 +79,21 @@ public class Vaga {
         return empresa;
     }
 
-    public List<Candidatura> getCandidaturas() {
+    public synchronized List<Candidatura> getCandidaturas() {
         return List.copyOf(candidaturas);
     }
 
-    public void adicionarCandidatura(Candidatura candidatura) {
+    synchronized void adicionarCandidatura(Candidatura candidatura) {
         Objects.requireNonNull(candidatura, "Candidatura é obrigatória.");
         if (candidatura.getVaga() != this) {
             throw new IllegalArgumentException("A candidatura pertence a outra vaga.");
         }
+        if (candidaturas.contains(candidatura)) {
+            return;
+        }
         boolean duplicada = candidaturas.stream()
-                .anyMatch(existente -> existente.getEstudante().getId()
-                        == candidatura.getEstudante().getId());
+                .anyMatch(existente -> Candidatura.mesmoEstudante(
+                        existente.getEstudante(), candidatura.getEstudante()));
         if (duplicada) {
             throw new IllegalStateException("O estudante já se candidatou a esta vaga.");
         }

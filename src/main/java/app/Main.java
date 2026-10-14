@@ -5,12 +5,14 @@ import model.Modalidade;
 import model.Perfil;
 import model.Usuario;
 import model.Vaga;
+import service.PortalVagas;
 import service.PortalVagasService;
 
 public class Main {
     public static void main(String[] args) {
     PortalVagasDAO dao = new PortalVagasDAO();
     PortalVagasService portal = new PortalVagasService(dao);
+    PortalVagas consultaPublica = new PortalVagas(portal);
 
     Usuario administrador = portal.cadastrarUsuario(
         "Admin", "admin@portal.com", Perfil.ADMINISTRADOR, null, null);
@@ -26,7 +28,7 @@ public class Main {
     portal.candidatar(estudante, vaga);
 
     System.out.printf("Portal iniciado: %d vaga aberta, %d candidatura(s).%n",
-        portal.listarVagasAbertas().size(),
+        consultaPublica.listarVagasAbertas().size(),
         portal.consultarCandidatos(empresa, vaga).size());
     }
 }

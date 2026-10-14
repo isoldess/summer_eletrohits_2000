@@ -129,10 +129,11 @@ public class PortalVagasService {
         if (!verificarVagaAberta(vagaCadastrada)) {
             throw new IllegalStateException("Só é possível se candidatar a vagas abertas.");
         }
-        if (verificarCandidaturaExistente(estudante, vagaCadastrada)) {
+        Estudante estudanteCadastrado = (Estudante) estudante;
+        if (verificarCandidaturaExistente(estudanteCadastrado, vagaCadastrada)) {
             throw new IllegalStateException("O estudante já se candidatou a esta vaga.");
         }
-        return dao.salvarCandidatura(new Candidatura(estudante, vagaCadastrada));
+        return dao.salvarCandidatura(estudanteCadastrado.candidatar(vagaCadastrada));
     }
 
     public boolean verificarCandidaturaExistente(Usuario estudante, Vaga vaga) {
@@ -158,7 +159,7 @@ public class PortalVagasService {
 
     public List<Candidatura> consultarMinhasCandidaturas(Usuario estudante) {
         exigirPerfilCadastrado(estudante, Perfil.ESTUDANTE);
-        return dao.candidaturasDoEstudante(estudante.getId());
+        return ((Estudante) estudante).consultarMinhasCandidaturas();
     }
 
     public List<Candidatura> consultarCandidatos(Usuario empresa, Vaga vaga) {

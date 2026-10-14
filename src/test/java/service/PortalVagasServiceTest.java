@@ -59,7 +59,9 @@ class PortalVagasServiceTest {
         Candidatura candidatura = portal.candidatar(estudante, vaga);
 
         assertEquals(1, vaga.getCandidaturas().size());
+        assertEquals(1, ((Estudante) estudante).consultarMinhasCandidaturas().size());
         assertSame(candidatura, vaga.getCandidaturas().get(0));
+        assertTrue(candidatura.validarDuplicidade());
     }
 
     @Test
@@ -69,6 +71,8 @@ class PortalVagasServiceTest {
 
         assertThrows(IllegalStateException.class, () -> portal.candidatar(
                 portal.cadastrarUsuario("Bia", "bia@portal.com", Perfil.ESTUDANTE, "Design", null), vaga));
+        assertThrows(IllegalStateException.class, () ->
+                new Candidatura(estudante, vaga).registrar());
         assertEquals(1, portal.consultarCandidatos(empresa, vaga).size());
         assertEquals(0, portal.listarVagasAbertas().size());
     }
@@ -132,6 +136,9 @@ class PortalVagasServiceTest {
         assertEquals(1, portal.filtrarVagas(vaga.getArea(), Modalidade.REMOTA).size());
         assertEquals(1, portal.filtrarVagas(null, Modalidade.PRESENCIAL).size());
         assertEquals(2, portal.filtrarVagas(null, null).size());
+        PortalVagas consultaPublica = new PortalVagas(portal);
+        assertEquals(2, consultaPublica.listarVagasAbertas().size());
+        assertEquals(1, consultaPublica.filtrarVagas(vaga.getArea(), Modalidade.REMOTA).size());
 
         var indicadores = portal.consultarIndicadores(administrador);
         assertEquals(1, indicadores.totalEstudantes());

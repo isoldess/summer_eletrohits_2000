@@ -67,7 +67,7 @@ public class PortalVagasDAO {
         if (candidatura.getId() == 0) {
             candidatura.setId(proximaCandidaturaId++);
         }
-        candidatura.getVaga().adicionarCandidatura(candidatura);
+        candidatura.registrar();
         candidaturas.put(candidatura.getId(), candidatura);
         return candidatura;
     }
