@@ -1,0 +1,145 @@
+@startuml
+title Diagrama de Classes - Portal de Vagas
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+hide empty members
+left to right direction
+
+abstract class Usuario {
+    - id: int
+    - nome: String
+    - email: String
+}
+
+class Estudante {
+    - curso: String
+    --
+    + candidatar(vaga: Vaga): Candidatura
+    + consultarMinhasCandidaturas(): List<Candidatura>
+}
+
+class Empresa {
+    - nomeEmpresa: String
+    --
+    + publicarVaga(vaga: Vaga): void
+    + editarVaga(vaga: Vaga): void
+    + encerrarVaga(vaga: Vaga): void
+    + consultarCandidatos(vaga: Vaga): List<Candidatura>
+}
+
+class Administrador {
+    --
+    + cadastrarArea(area: Area): void
+    + editarArea(area: Area): void
+    + excluirArea(area: Area): void
+    + consultarIndicadores(): Indicadores
+}
+
+class Area {
+    - id: int
+    - nome: String
+}
+
+class Vaga {
+    - id: int
+    - titulo: String
+    - descricao: String
+    - localizacao: String
+    - modalidade: Modalidade
+    - cargaHorariaSemanal: int
+    - situacao: SituacaoVaga
+    --
+    + publicar(): void
+    + editar(): void
+    + encerrar(): void
+}
+
+class Candidatura {
+    - id: int
+    - dataInscricao: Date
+    --
+    + registrar(): void
+    + validarDuplicidade(): boolean
+}
+
+class PortalVagas {
+    + listarVagasAbertas(): List<Vaga>
+    + filtrarVagas(area: Area, modalidade: Modalidade): List<Vaga>
+}
+
+class Indicadores {
+    + quantidadeEstudantes: int
+    + quantidadeEmpresas: int
+    + vagasAbertas: int
+    + vagasEncerradas: int
+    + quantidadeCandidaturas: int
+}
+
+enum Modalidade {
+    PRESENCIAL
+    REMOTA
+    HIBRIDA
+}
+
+enum SituacaoVaga {
+    ABERTA
+    ENCERRADA
+}
+
+Usuario <|-- Estudante
+Usuario <|-- Empresa
+Usuario <|-- Administrador
+
+Empresa "1" -- "0..*" Vaga : publica
+Estudante "1" -- "0..*" Candidatura : realiza
+
+Area "1" o-- "0..*" Vaga : classifica
+Vaga "1" *-- "0..*" Candidatura : recebe
+
+Vaga --> Modalidade
+Vaga --> SituacaoVaga
+
+Administrador ..> Area : gerencia
+Administrador ..> Indicadores : consulta
+PortalVagas ..> Vaga : consulta
+PortalVagas ..> Area : filtra
+
+note right of Usuario
+    E-mail único.
+    Estudante informa curso.
+    Empresa informa nome da empresa.
+    Uma conta de empresa representa uma empresa.
+    Senha será incluída na Entrega 2.
+end note
+
+note right of Vaga
+    Cada vaga tem uma empresa responsável
+    e pertence a uma área.
+    Carga horária semanal > 0.
+    Apenas a empresa responsável pode editar
+    ou encerrar a vaga.
+    Vaga encerrada não aceita candidaturas.
+    Encerrar preserva candidaturas anteriores.
+end note
+
+note right of Candidatura
+    Cada candidatura pertence a um estudante
+    e a uma vaga.
+    Data da inscrição obrigatória.
+    Não pode haver duplicidade para o mesmo
+    estudante e vaga.
+end note
+
+note bottom of Area
+    Nome único.
+    Apenas administradores cadastram e editam.
+    Área associada a uma vaga não pode ser excluída.
+end note
+
+note bottom of PortalVagas
+    Consulta pública: lista vagas abertas
+    e permite filtrar por área e modalidade.
+end note
+
+@enduml
